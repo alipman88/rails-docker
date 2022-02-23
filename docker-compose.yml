@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  rails:
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - './rails/.:/rails'
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rails
+      PGHOST: postgresql
+      PGUSER: postgres
+      PGPASSWORD: rails
+    depends_on:
+      - mysql
+      - postgresql
+  mysql:
+    image: mysql:5.7
+    # Apple M1 users - uncomment the following line:
+    # platform: linux/x86_64
+    environment:
+      MYSQL_ROOT_PASSWORD: rails
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+  postgresql:
+    image: postgres:10.20
+    environment:
+      POSTGRES_PASSWORD: rails
+    volumes:
+      - ./postgresql:/docker-entrypoint-initdb.d
